@@ -30,48 +30,48 @@
     </head>
     <body>
         <div id="output" style="width: 100%; height: 100%;"></div>
-		
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/kinvey-phonegap.js"></script>
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
+           <script type="text/javascript" src="PushNotification.js">
+	<gap:plugin name="com.adobe.plugins.pushplugin" />
+	var pushNotification = window.plugins.pushNotification;
+	pushNotification.register(app.successHandler, app.errorHandler,{"senderID":"168738893245","ecb":"app.onNotificationGCM"});
+	// result contains any message sent from the plugin call
+	successHandler: function(result) {
+		alert('Callback Success! Result = '+result)
+	},
+	errorHandler:function(error) {
+		alert(error);
+	},
+	onNotificationGCM: function(e) {
+			switch( e.event )
+			{
+				case 'registered':
+					if ( e.regid.length > 0 )
+					{
+						console.log("Regid " + e.regid);
+						alert('registration id = '+e.regid);
+					}
+				break;
+	 
+				case 'message':
+				  // this is the actual push notification. its format depends on the data model from the push server
+				  alert('message = '+e.message+' msgcnt = '+e.msgcnt);
+				break;
+	 
+				case 'error':
+				  alert('GCM error = '+e.msg);
+				break;
+	 
+				default:
+				  alert('An unknown GCM event has occurred');
+				  break;
+			}
 		
-           document.addEventListener("deviceready",onDeviceReady,false);
-	function onDeviceReady(){
-	alert('hi');
-	console.log("Device Ready");
-	
-	var push = PushNotification.init({ "android": {"senderID": "168738893245"},
-	"ios": {"alert": "true", "badge": "true", "sound": "true"}, "windows": {} } );
-
-	push.on('registration', function(data) {
-	console.log(data.registrationId);
-	$("#gcm_id").html(data.registrationId);
-	});
-
-	push.on('notification', function(data) {
-	console.log(data.message);
-	alert(data.title+" Message: " +data.message);
-	// data.title,
-	// data.count,
-	// data.sound,
-	// data.image,
-	// data.additionalData
-	});
-
-	push.on('error', function(e) {
-	console.log(e.message);
-	});
-	}
-	</script>
-	</head>
-	<body>
-	<h1>Push Notification Example</h1>
-	Your GCM ID : <br/>
-	<p id="gcm_id"></p>
-</body>
+        </script>
+    </body>
 </html>
-
-       
